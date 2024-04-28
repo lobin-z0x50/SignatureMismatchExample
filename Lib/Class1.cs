@@ -2,7 +2,12 @@
 {
     public class Class1
     {
-        public void Print(string message, string? opt=null)
+        public void Print(string message)
+        {
+            Print(message, null);
+        }
+
+        public void Print(string message, string? opt)
         {
             System.Console.Write("[Print] msg=");
             System.Console.WriteLine(message);
