@@ -1,0 +1,2 @@
+# SignatureMismatchExample
+C#でのメソッドシグネチャのミスマッチを再現するサンプルコード
