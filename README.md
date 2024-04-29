@@ -40,6 +40,22 @@ dotnet run --project App --no-build
 ls -l App/bin/Debug/net8.0/
 ```
 
+<img src="images/ss-01.gif" width="750" />
+
+以下のようなエラーが発生します。
+```
+Unhandled exception. System.MissingMethodException: Method not found: 'Void Lib.Class1.Print(System.String)'.
+```
+
+`App` アプリからは、 `Lib.dll` の中から `Void Lib.Class1.Print(System.String)` というシグネチャのメソッドに依存しているので、
+これが見つからないというエラーになっています。
+
+
+### オーバーロード版を試す
+
+次にブランチ `add-overroad-as-keep-original-signature` に切り替え、
+同様にライブラリだけリビルドしてみます。
+
 ```sh
 # --- STEP.3 ---
 # 再度ブランチ変更
@@ -58,3 +74,24 @@ dotnet run --project App --no-build
 # 状況確認（App.dll のほうが更新日時が古いはず）
 ls -l App/bin/Debug/net8.0/
 ```
+
+<img src="images/ss-02.gif" width="750" />
+
+
+## 解説
+
+`App` アプリからは、 `Lib.dll` の中から `Void Lib.Class1.Print(System.String)` というシグネチャのメソッドに依存しているので、
+これが見つからないというエラーになっています。
+
+STEP.2 でビルドした `Lib.dll` をアセンブリビューワ `ildasm` で開いてみると
+以下のようになっています。
+
+<img src="images/ss-03.gif" width="600" />
+
+`void Print(string message, [opt] string 'opt')` という定義になっているため、
+引数が１つの `Print` メソッドは存在せず、
+引数が２つのものしかありません。
+
+したがって、`App` アプリのロード時に 呼び出すべき `Print` メソッドが見つからず、エラーが発生しています。
+
+
